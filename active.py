@@ -1,5 +1,5 @@
 import math
-import scrape
+import ascrape as scrape
 
 # Global variables
 Player = "Username"
