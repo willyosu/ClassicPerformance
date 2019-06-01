@@ -1,5 +1,5 @@
 import math
-import ascrape as scrape
+import ascrape
 
 # Global variables
 Player = "Username"
@@ -40,7 +40,7 @@ def calc(scoreArray):
 
 # Calculate performance for a user by webscraping data using scrape.py
 def scrape(User):
-	userData = scrape.getData(User)
+	userData = ascrape.get(User)
 	Totals = []
 	for i in range(len(userData)):
 		Totals.append(play(userData[i][0], userData[i][1], userData[i][2]))
