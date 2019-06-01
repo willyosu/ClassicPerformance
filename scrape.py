@@ -7,7 +7,8 @@ from selenium.webdriver.support import expected_conditions
 
 # Function to get data from osustats.ppy.sh since APIv2 is not ready yet.
 # Unreliable for now, but it's the best set we have we have to estimate a user's performance.
-def Data(Player):
+# Function to get data from osustats.ppy.sh
+def getData(Player):
 	# Takes date and return the number of days since (Y-M-D format)
 	def daysSince(desiredDate):
 		desiredDate = datetime.datetime.strptime(desiredDate, "%Y-%m-%d")
@@ -16,15 +17,9 @@ def Data(Player):
 		return delta.days
 	
 	# Creating arrays for storing the data
-	Links = []
 	Ranks = []
-	Hits = []
-	Misses = []
-	Accuracies = []
-	ModCombinations = []
+	Performances = []
 	Dates = []
-	Difficulties = []
-	Popularities = []
 	endOfResults = False
 	
 	driver = webdriver.Chrome()
@@ -41,18 +36,10 @@ def Data(Player):
 		element_present = expected_conditions.presence_of_element_located((By.XPATH, """/html/body/div/div/div/div[2]/div[1]/div/div[1]"""))
 		WebDriverWait(driver, 5).until(element_present)
 		
-		BeatmapData = driver.find_elements_by_css_selector("div.beatmapInfo > div > a")
 		RankData = driver.find_elements_by_class_name("rank")
-		HitData = driver.find_elements_by_class_name("hits")
-		MissData = driver.find_elements_by_class_name("misses")
-		ModCombinationData = driver.find_elements_by_class_name("mods")
+		PerformanceData = driver.find_elements_by_class_name("pp")
 		DateData = driver.find_elements_by_class_name("date")
 		nonlocal endOfResults
-		
-		# Getting links to each beatmap page
-		for i in BeatmapData:
-			i = i.get_attribute("href")
-			Links.append(i)
 		
 		# Converting rank data to numbers and adding to array
 		for i in RankData:
@@ -66,52 +53,18 @@ def Data(Player):
 				pass
 			else:
 				Ranks.append(i)
-		
-		# Adding hit data to array
-		for i in HitData:
-			Hits.append(i.text)
-		
-		# Adding miss data to array
-		for i in MissData:
-			Misses.append(i.text)
-		
-		# Zipping hit and miss data into an array of tuples
-		AccuracyData = zip(Hits, Misses)
-		
-		# Converting hit and miss data and calculating accuracy
-		for i in AccuracyData:
-			hitList = i[0].split("/")
-			hitList.append(i[1])
-			try:
-				int(hitList[3])
-			except:
-				pass
-			else:
-				hitList = list(map(int, hitList))
-				Accuracies.append((((hitList[0])+(hitList[1]*(1/3))+(hitList[2]*(1/6)))/(sum(hitList)))*100)
-		
-		# Mods
-		for i in ModCombinationData:
+		# Adding pp data to array
+		for i in PerformanceData:
 			i = i.text
-			modDictionary = {'None':'0.00', 'HR':'0.05', 'HD':'0.025', 'DT':'0.10', 'NC':'0.10', 'FL':'0.05', 'EZ':'-0.2', 'NF':'-0.2', 'SO':'-0.2', 'SD':'0.00', 'PF':'0.00'}
-			for j, k in modDictionary.items():
-				i = i.replace(j, k)
-			modArray = i.split(",")
-			modSum = 1
-			for j in range(len(modArray)):
-				try:
-					modArray[j] = float(modArray[j])
-				except:
-					pass
-				else:
-					modSum += modArray[j]
+			remove = "-"
+			for character in remove:
+				i = i.replace(character, "0")
 			try:
-				float(modArray[0])
+				i = int(i)
 			except:
 				pass
 			else:
-				ModCombinations.append(modSum)
-		
+				Performances.append(i)
 		# Checking date data and adding to array
 		for i in DateData:
 			i = i.text
@@ -125,24 +78,13 @@ def Data(Player):
 					pass
 				else:
 					Dates.append(daysSince(i))
-		
-		# Fetching difficulty and popularity data from each beatmap
-		for i in Links:
-			driver.get(i)
-			DifficultyData = driver.find_element_by_css_selector("table.beatmap-stats-table > tbody > tr:last-child > td.beatmap-stats-table__value")
-			PopularityData = driver.find_element_by_class_name("beatmap-success-rate__percentage")
-			PopularityData = PopularityData.get_property("title")
-			PopularityData = PopularityData.split(" / ")
-			PopularityString = PopularityData[0].replace(",","")
-			Difficulties.append(float(DifficultyData.text))
-			Popularities.append(int(PopularityString))
-		
+	
 	for i in range(1, int(Pages) + 1):
 		Page(str(i))
 		if (endOfResults) or (i == int(Pages)):
 			Scores = []
 			for j in range(len(Dates)):
-				Scores.append(tuple((Ranks[j], Accuracies[j], ModCombinations[j], Dates[j], Difficulties[j], Popularities[j])))
+				Scores.append(tuple((Ranks[j], Dates[j], Performances[j])))
 			return(Scores)
 		else:
 			pass
