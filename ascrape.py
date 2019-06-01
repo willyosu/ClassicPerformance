@@ -7,13 +7,12 @@ from selenium.webdriver.support import expected_conditions
 
 # Function to get data from osustats.ppy.sh since APIv2 is not ready yet.
 # Unreliable for now, but it's the best set we have we have to estimate a user's performance.
-# Function to get data from osustats.ppy.sh
-def getData(Player):
+def get(Player):
 	# Takes date and return the number of days since (Y-M-D format)
-	def daysSince(desiredDate):
-		desiredDate = datetime.datetime.strptime(desiredDate, "%Y-%m-%d")
-		currentDate = datetime.datetime.today()
-		delta = currentDate - desiredDate
+	def Since(Date_Play):
+		Date_Play = datetime.datetime.strptime(Date_Play, "%Y-%m-%d")
+		Date_Current = datetime.datetime.today()
+		delta = Date_Current - Date_Play
 		return delta.days
 	
 	# Creating arrays for storing the data
@@ -31,18 +30,18 @@ def getData(Player):
 	Pages = Pages[-2] + Pages[-1]
 	
 	# Creating webdriver to fetch data
-	def Page(pageNumber):
-		driver.get("https://osustats.ppy.sh/u/" + Player + "//" + pageNumber + "//2////1-500/")
+	def Page(Page_Number):
+		driver.get("https://osustats.ppy.sh/u/" + Player + "//" + Page_Number + "//2////1-500/")
 		element_present = expected_conditions.presence_of_element_located((By.XPATH, """/html/body/div/div/div/div[2]/div[1]/div/div[1]"""))
 		WebDriverWait(driver, 5).until(element_present)
 		
-		RankData = driver.find_elements_by_class_name("rank")
-		DateData = driver.find_elements_by_class_name("date")
-		PerformanceData = driver.find_elements_by_class_name("pp")
+		Rank_Data = driver.find_elements_by_class_name("rank")
+		Date_Data = driver.find_elements_by_class_name("date")
+		Performance_Data = driver.find_elements_by_class_name("pp")
 		nonlocal endOfResults
 		
 		# Converting rank data to numbers and adding to array
-		for i in RankData:
+		for i in Rank_Data:
 			i = i.text
 			remove = "~#"
 			for character in remove:
@@ -54,20 +53,16 @@ def getData(Player):
 			else:
 				Ranks.append(i)
 		# Checking date data and adding to array
-		for i in DateData:
+		for i in Date_Data:
 			i = i.text
 			try:
-				daysSince(i)
+				Since(i)
 			except:
 				pass
 			else:
-				if daysSince(i) > ageFalloff:
-					endOfResults = True
-					pass
-				else:
-					Dates.append(daysSince(i))
+				Dates.append(Since(i))
 		# Adding pp data to array
-		for i in PerformanceData:
+		for i in Performance_Data:
 			i = i.text
 			remove = "-"
 			for character in remove:
