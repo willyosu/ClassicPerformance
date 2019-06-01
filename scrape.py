@@ -18,8 +18,8 @@ def getData(Player):
 	
 	# Creating arrays for storing the data
 	Ranks = []
-	Performances = []
 	Dates = []
+	Performances = []
 	endOfResults = False
 	
 	driver = webdriver.Chrome()
@@ -37,8 +37,8 @@ def getData(Player):
 		WebDriverWait(driver, 5).until(element_present)
 		
 		RankData = driver.find_elements_by_class_name("rank")
-		PerformanceData = driver.find_elements_by_class_name("pp")
 		DateData = driver.find_elements_by_class_name("date")
+		PerformanceData = driver.find_elements_by_class_name("pp")
 		nonlocal endOfResults
 		
 		# Converting rank data to numbers and adding to array
@@ -53,18 +53,6 @@ def getData(Player):
 				pass
 			else:
 				Ranks.append(i)
-		# Adding pp data to array
-		for i in PerformanceData:
-			i = i.text
-			remove = "-"
-			for character in remove:
-				i = i.replace(character, "0")
-			try:
-				i = int(i)
-			except:
-				pass
-			else:
-				Performances.append(i)
 		# Checking date data and adding to array
 		for i in DateData:
 			i = i.text
@@ -78,7 +66,18 @@ def getData(Player):
 					pass
 				else:
 					Dates.append(daysSince(i))
-	
+		# Adding pp data to array
+		for i in PerformanceData:
+			i = i.text
+			remove = "-"
+			for character in remove:
+				i = i.replace(character, "0")
+			try:
+				i = int(i)
+			except:
+				pass
+			else:
+				Performances.append(i)
 	for i in range(1, int(Pages) + 1):
 		Page(str(i))
 		if (endOfResults) or (i == int(Pages)):
