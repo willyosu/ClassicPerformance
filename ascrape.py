@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
+from webdriver_manager.chrome import ChromeDriverManager
 
 # Function to get data from osustats.ppy.sh since APIv2 is not ready yet.
 # Unreliable for now, but it's the best set we have we have to estimate a user's performance.
@@ -21,7 +22,7 @@ def get(Player):
 	Performances = []
 	endOfResults = False
 	
-	driver = webdriver.Chrome()
+	driver = webdriver.Chrome(ChromeDriverManager().install())
 	driver.get("https://osustats.ppy.sh/u/" + Player + "//1//2////1-500/")
 	element_present = expected_conditions.presence_of_element_located((By.XPATH, """/html/body/div/div/div/div[2]/div[1]/div/div[1]"""))
 	WebDriverWait(driver, 5).until(element_present)
