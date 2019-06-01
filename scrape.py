@@ -7,7 +7,7 @@ from selenium.webdriver.support import expected_conditions
 
 # Function to get data from osustats.ppy.sh since APIv2 is not ready yet.
 # Unreliable for now, but it's the best set we have we have to estimate a user's performance.
-def Data(Player):
+def getData(Player):
 	# Takes date and return the number of days since (Y-M-D format)
 	def daysSince(desiredDate):
 		desiredDate = datetime.datetime.strptime(desiredDate, "%Y-%m-%d")
