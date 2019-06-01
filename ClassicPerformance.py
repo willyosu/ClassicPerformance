@@ -47,7 +47,7 @@ def classicPerformance(userScoreArray):
 
 # Calculate performance for a user by webscraping data using scrape.py
 def scrapePerformance(User):
-	userData = scrape.Data(User)
+	userData = scrape.getData(User)
 	Totals = []
 	for i in range(len(userData)):
 		Totals.append(calcPlay(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
