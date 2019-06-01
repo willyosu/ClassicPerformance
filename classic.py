@@ -39,15 +39,14 @@ def weight(performanceArray):
 
 # Calculate performance from an array of array constructed as follows: scoreArray[i][Rank, Accuracy, Mods, Age, Difficulty, Popularity]
 def calc(scoreArray):
-	userData = scoreArray
 	Totals = []
-	for i in range(len(userData)):
-		Totals.append(play(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
+	for i in range(len(scoreArray)):
+		Totals.append(play(scoreArray[i][0], scoreArray[i][1], scoreArray[i][2], scoreArray[i][3], scoreArray[i][4], scoreArray[i][5]))
 	return weight(Totals)
 
 # Calculate performance for a user by webscraping data using scrape.py
 def scrape(User):
-	userData = scrape.Data(User)
+	userData = scrape.get(User, Age_Falloff)
 	Totals = []
 	for i in range(len(userData)):
 		Totals.append(play(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
