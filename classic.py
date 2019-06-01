@@ -1,5 +1,5 @@
 import math
-import cscrape as scrape
+import cscrape
 
 # Global variables
 Player = "Username"
@@ -46,7 +46,7 @@ def calc(scoreArray):
 
 # Calculate performance for a user by webscraping data using scrape.py
 def scrape(User):
-	userData = scrape.get(User, Age_Falloff)
+	userData = cscrape.get(User, Age_Falloff)
 	Totals = []
 	for i in range(len(userData)):
 		Totals.append(play(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
