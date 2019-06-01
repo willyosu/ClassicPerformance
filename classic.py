@@ -3,52 +3,52 @@ import scrape
 
 # Global variables
 Player = "Username"
-ageFalloff = 365
-popularityFalloff = 100000
-rankFalloff = 500
+Age_Falloff = 365
+Popularity_Falloff = 100000
+Rank_Falloff = 500
 
 # Rank: play's position on leaderboard
 # Accuracy: accuracy of the play (between 0.00 and 100.00)
 # Age: number of days since play was set
 # Difficulty: map's star rating
 # Popularity: total number of ranked plays on the map (NOT playcount)
-def calcPlay(Rank, Accuracy, Mods, Age, Difficulty, Popularity):
+def play(Rank, Accuracy, Mods, Age, Difficulty, Popularity):
 	# Determines age falloff
-	if Age >= ageFalloff:
-		ageFactor = 0.01
+	if Age >= Age_Falloff:
+		Age_Factor = 0.01
 	else:
-		ageFactor = math.log(-1*Age+(ageFalloff+1), ageFalloff+1) + 0.01
+		Age_Factor = math.log(-1 * Age + (Age_Falloff + 1), Age_Falloff + 1) + 0.01
 	
 	# Determines popularity factor based on number of ranked plays
-	popularityFactor = math.log(Popularity, popularityFalloff)
+	Popularity_Factor = math.log(Popularity, Popularity_Falloff)
 	
 	# Determines rank falloff
-	if Rank >= rankFalloff:
-		rankFactor = 0.01
+	if Rank >= Rank_Falloff:
+		Rank_Factor = 0.01
 	else:
-		rankFactor = -1*math.log(Rank, rankFalloff)+1 + 0.01
+		Rank_Factor = (-1 * math.log(Rank, Rank_Falloff) + 1) + 0.01
 		
-	return (Difficulty*Accuracy*Mods*ageFactor*popularityFactor*rankFactor)
+	return (Difficulty*Accuracy*Mods*Age_Factor*Popularity_Factor*Rank_Factor)
 
-def calcTotal(scoreArray):
+def weight(performanceArray):
 	# Takes array of performances and weights and calculates total performance
-	scoreArray.sort(reverse=True)
-	for i in range(len(scoreArray)):
-		scoreArray[i] = scoreArray[i]*((0.95)**i)
-	return sum(scoreArray)
+	performanceArray.sort(reverse=True)
+	for i in range(len(performanceArray)):
+		performanceArray[i] = performanceArray[i]*((0.95)**i)
+	return sum(performanceArray)
 
-# Calculate performance from an array of array constructed as follows: userScoreArray[i][Rank, Accuracy, Mods, Age, Difficulty, Popularity]
-def classicPerformance(userScoreArray):
-	userData = userScoreArray
+# Calculate performance from an array of array constructed as follows: scoreArray[i][Rank, Accuracy, Mods, Age, Difficulty, Popularity]
+def calc(scoreArray):
+	userData = scoreArray
 	Totals = []
 	for i in range(len(userData)):
-		Totals.append(calcPlay(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
-	return calcTotal(Totals)
+		Totals.append(play(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
+	return weight(Totals)
 
 # Calculate performance for a user by webscraping data using scrape.py
-def scrapePerformance(User):
+def scrape(User):
 	userData = scrape.Data(User)
 	Totals = []
 	for i in range(len(userData)):
-		Totals.append(calcPlay(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
-	return calcTotal(Totals)
+		Totals.append(play(userData[i][0], userData[i][1], userData[i][2], userData[i][3], userData[i][4], userData[i][5]))
+	return weight(Totals)
