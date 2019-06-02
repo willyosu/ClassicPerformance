@@ -5,6 +5,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from webdriver_manager.chrome import ChromeDriverManager
 
+# Driver timeout for locating element. Raise if you have a slow connection to osustats.ppy.sh.
+drivertimeout = 3
+
 # Function to get data from osustats.ppy.sh since APIv2 is not ready yet.
 # Unreliable for now, but it's the best set we have we have to estimate a user's performance.
 def aget(Player):
@@ -23,7 +26,7 @@ def aget(Player):
 	
 	driver = webdriver.Chrome(ChromeDriverManager().install())
 	driver.get("https://osustats.ppy.sh/u/" + Player + "//1//2////1-500/")
-	WebDriverWait(driver).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
+	WebDriverWait(driver, drivertimeout).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
 	Pages = driver.find_element_by_xpath("""/html/body/div/div/div/div[2]/div[1]/div/div[1]""").get_attribute("textContent")
 	Pages = Pages.replace(" ","").split("of")
 	numOfPages = Pages[-1]
@@ -31,7 +34,7 @@ def aget(Player):
 	# Creating webdriver to fetch data
 	def Page(Page_Number):
 		driver.get("https://osustats.ppy.sh/u/" + Player + "//" + Page_Number + "//2////1-500/")
-		WebDriverWait(driver).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
+		WebDriverWait(driver, drivertimeout).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
 		
 		Rank_Data = driver.find_elements_by_class_name("rank")
 		Date_Data = driver.find_elements_by_class_name("date")
@@ -107,7 +110,7 @@ def cget(Player, Age_Falloff):
 	
 	driver = webdriver.Chrome(ChromeDriverManager().install())
 	driver.get("https://osustats.ppy.sh/u/" + Player + "//1//2////1-500/")
-	WebDriverWait(driver, 5).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
+	WebDriverWait(driver, drivertimeout).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
 	Pages = driver.find_element_by_xpath("""/html/body/div/div/div/div[2]/div[1]/div/div[1]""").get_attribute("textContent")
 	Pages = Pages.replace(" ","").split("of")
 	numOfPages = Pages[-1]
@@ -115,7 +118,7 @@ def cget(Player, Age_Falloff):
 	# Creating webdriver to fetch data
 	def Page(Page_Number):
 		driver.get("https://osustats.ppy.sh/u/" + Player + "//" + Page_Number + "//2////1-500/")
-		WebDriverWait(driver, 5).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
+		WebDriverWait(driver, drivertimeout).until(expected_conditions.presence_of_element_located((By.XPATH, """//*[@id="line-chart"]""")))
 		
 		Beatmap_Data = driver.find_elements_by_css_selector("div.beatmapInfo > div > a")
 		Rank_Data = driver.find_elements_by_class_name("rank")
