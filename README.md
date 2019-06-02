@@ -6,7 +6,9 @@ Due to this fact the webscraping functions take around 3-5 seconds to process a 
 
 ## How it works
 If you have no idea what ppv1 was or how it worked, then here is an image released by peppy for the osu!wiki to educate players on how it worked right after its release in early 2012:
+
 ![Performance points poster (circa 2012)](https://github.com/willyosu/ClassicPerformance/blob/master/ppv1.png)
+
 Simply put, players gain pp from ranking highly on maps with highly contested leaderboards and lose pp from becoming inactive. So from this chart you can extrapolate several main points/constraints for the ranking system:
 - ranks beyond #500 do not reward any pp
 - pp becomes negligible as a play reaches a year in age
