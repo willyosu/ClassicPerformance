@@ -3,12 +3,11 @@ import osustatsscraper as scraper
 
 # Global variables/constants
 Age_Falloff = 365
-Rank_Falloff = 1000
 Popularity_Falloff = 100000
 Rank_Falloff = 500
 
+# Takes array of performances and weights and calculates total performance
 def weight(performanceArray):
-	# Takes array of performances and weights and calculates total performance
 	performanceArray.sort(reverse=True)
 	for i in range(len(performanceArray)):
 		performanceArray[i] = performanceArray[i]*((0.95)**i)
@@ -21,7 +20,7 @@ def acalc(scoreArray):
 		Totals.append(play(userData[i][0], userData[i][1], userData[i][2]))
 	return weight(Totals)
 
-# Active performance functions
+# Active performance single play calculation
 def aplay(Rank, Age, Performance):
 	# Determines age falloff
 	if Age >= Age_Falloff:
@@ -36,8 +35,8 @@ def aplay(Rank, Age, Performance):
 		Rank_Factor = (-1 * math.log(Rank, Rank_Falloff) + 1) + 0.01
 
 	return (Performance*Age_Factor*Rank_Factor)
-	# Calculate performance for a user by webscraping data using scrape.py
 
+# Calculate performance for a user by webscraping data
 def ascrape(User):
 	userData = scraper.aget(User)
 	Totals = []
@@ -45,6 +44,7 @@ def ascrape(User):
 		Totals.append(aplay(userData[i][0], userData[i][1], userData[i][2]))
 	return weight(Totals)
 
+# Classic performance single play calculation
 def cplay(Rank, Accuracy, Mods, Age, Difficulty, Popularity):
 	# Determines age falloff
 	if Age >= Age_Falloff:
@@ -70,7 +70,7 @@ def ccalc(scoreArray):
 		Totals.append(play(scoreArray[i][0], scoreArray[i][1], scoreArray[i][2], scoreArray[i][3], scoreArray[i][4], scoreArray[i][5]))
 	return weight(Totals)
 
-# Calculate performance for a user by webscraping data using scrape.py
+# Calculate performance for a user by webscraping data
 def cscrape(User):
 	userData = scraper.cget(User, Age_Falloff)
 	Totals = []
