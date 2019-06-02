@@ -14,6 +14,7 @@ Simply put, players gain pp from ranking highly on maps with highly contested le
 - pp becomes negligible as a play reaches a year in age
 - more difficult maps reward more pp
 - maps with a high amount of submitted scores reward more
+
 To accomodate all of these criteria we can recreate the constraints using math: using a logarithmic falloff for different factors of a play such as rank and age so that they will decay towards 0 at the limits. I decided to not pay attention to small bonuses like the one for achieving an SS.
 
 All of this brings me to the two methods that I use to calculate the total performance of a user. Both are unique and you may tend toward one of the other depending on what you want from a system like this:
